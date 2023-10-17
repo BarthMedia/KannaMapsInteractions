@@ -68,6 +68,7 @@ function saveToken(res: any) {
   ls.set('user', {
     email: res.email,
     name: res.name,
+    confirmed: res.confirmed,
   });
   model.state.buttonState();
 }

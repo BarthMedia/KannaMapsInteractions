@@ -7,6 +7,8 @@ import login from './helper/view/login';
 import logout from './helper/view/logout';
 import review from './helper/view/review';
 import * as google from './helper/view/google';
+import initPwReset from './helper/view/initPwReset';
+import submitPwReset from './helper/view/submitPwReset';
 
 // + Exports +
 export default function init(state: any) {
@@ -43,6 +45,16 @@ export default function init(state: any) {
     if (ls.get('userToken')) logoutBtn.classList.remove('cc-inactive');
     else if (ls.get('user')) signinBtn.classList.remove('cc-inactive');
     else registerBtn.classList.remove('cc-inactive');
+
+    // Confirm
+    const banner = document.querySelector(
+      '[c-el="complete-setup"]'
+    ) as HTMLElement;
+    if (ls.get('userToken') && !ls.get('user').confirmed) {
+      if (banner) banner.classList.remove('cc-inactive');
+    } else {
+      if (banner) banner.classList.add('cc-inactive');
+    }
   };
 
   // Google auth
@@ -55,6 +67,8 @@ export default function init(state: any) {
   login(state);
   logout(state);
   review(state);
+  initPwReset(state);
+  submitPwReset(state);
 
   // Review buttons event listener
   const reviewButtons = document?.querySelectorAll('[c-el="review-opener"]');

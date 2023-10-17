@@ -7,11 +7,10 @@ import * as config from '../../config';
 export default function (state: any) {
   // Elements
   const modul = document.querySelector(
-    '[c-el="sign-in-modul"]'
-  ) as HTMLElement | null;
+    '[c-el="new-password-modul"]'
+  ) as HTMLElement;
   const form = modul?.querySelector('form');
-  const googleBtn = modul?.querySelector('.google-sign-up-btn');
-  const modulCloser = modul?.querySelector('.pop--up_x') as HTMLElement | null;
+  const modulCloser = modul?.querySelector('.pop--up_x') as HTMLElement;
   const reviewButton = document?.querySelector(
     '[c-el="review-opener"]'
   ) as HTMLElement | null;
@@ -23,9 +22,9 @@ export default function (state: any) {
     ];
 
   // Guard
-  if (!modulCloser || !modul || !form || !studioForm || !googleBtn)
+  if (!modulCloser || !modul || !form || !studioForm)
     throw new Error(
-      `KannaMapsInteractions -> login.ts: Coulnd't find required elements!`
+      `KannaMapsInteractions -> submitPwReset.ts: Coulnd't find required elements!`
     );
 
   // + Events +
@@ -34,27 +33,22 @@ export default function (state: any) {
   studioForm.events.afterSubmit(() => {
     // Values
     const token = studioForm.data?.response?.authToken;
-    const confirmed = studioForm.data?.response?.confirmed;
+    const user = studioForm.data?.response?.user;
 
     // Guard
     if (!token)
       throw new Error(
-        `KannaMapsInteractions -> login.ts: Coulnd't find token!`
+        `KannaMapsInteractions -> submitPwReset.ts: Coulnd't find token!`
       );
 
     // Set
     modul.style.pointerEvents = 'none';
     ls.set('userToken', token, { ttl: 86400 * 30 });
-    ls.set('user', { ...ls.get('user'), confirmed: confirmed });
+    ls.set('user', user);
     state.buttonState();
     setTimeout(() => {
       modulCloser.click();
       reviewButton?.click();
     }, studioForm.animationData.timeBoth * 1000 + 300);
-  });
-
-  // Google
-  googleBtn.addEventListener('click', () => {
-    state.googleAuth();
   });
 }
